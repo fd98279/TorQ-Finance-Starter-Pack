@@ -54,10 +54,18 @@ export DOGSTATSD_PORT=8125
 TORQSSLCERT=${KDBLOG}/torqsslcert.txt
 touch ${TORQSSLCERT}
 if [ -z "${SSL_CA_CERT_FILE}" ]; then
-  mkdir -p ${TORQHOME}/certs
-  curl -s  https://curl.haxx.se/ca/cacert.pm > ${TORQHOME}/certs/cabundle.pem
-  echo "`date`    The SSL securiity certificate has been downloaded to ${TORQHOME}/certs/cabundle.pem" </dev/null >>$TORQSSLCERT
-  export SSL_CA_CERT_FILE=${TORQHOME}/certs/cabundle.pem
+  if [ -n "${KX_SSL_CA_FILE}" ] && [ -f "${KX_SSL_CA_FILE}" ]; then
+    echo "`date`    Using existing CA bundle at ${KX_SSL_CA_FILE}" </dev/null >>$TORQSSLCERT
+    export SSL_CA_CERT_FILE=${KX_SSL_CA_FILE}
+  elif [ -f /etc/ssl/certs/ca-certificates.crt ]; then
+    echo "`date`    Using system CA bundle at /etc/ssl/certs/ca-certificates.crt" </dev/null >>$TORQSSLCERT
+    export SSL_CA_CERT_FILE=/etc/ssl/certs/ca-certificates.crt
+  else
+    mkdir -p ${TORQHOME}/certs
+    curl -s https://curl.se/ca/cacert.pem > ${TORQHOME}/certs/cabundle.pem
+    echo "`date`    The SSL security certificate has been downloaded to ${TORQHOME}/certs/cabundle.pem" </dev/null >>$TORQSSLCERT
+    export SSL_CA_CERT_FILE=${TORQHOME}/certs/cabundle.pem
+  fi
 else
   echo "`date`    The SSL security certificate already exists. If https requests fail it may be because of inappropriate certification." </dev/null >>$TORQSSLCERT
 fi
