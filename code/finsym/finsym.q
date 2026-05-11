@@ -1,4 +1,4 @@
-util:getenv[`KDBAPPCODE],"/common/textutil.q";
+util:getenv[`KDBAPPCODE],"/common/util.q";
 system "l ",util;
 
 \d .sravz_finsym
@@ -11,15 +11,11 @@ getsymbollimit:{[]
   :.[value;enlist `symbollimit;{[e] 45}]
   }
 
-/ Resolve symbols CSV path from env/config with default file fallback.
+/ Resolve symbols file path from env override or default location.
 getsymbolsfile:{[]
-  env:getenv`EODWS_SYMBOLS_FILE;
-  if[not ""~env; :hsym `$env];
-  :.[value;enlist `symbolsfile;{
-    [e] 
-    symbolsfile
-    }
-    ]
+  env_file: .sravz_util.getenvvar[`EODWS_SYMBOLS_FILE; ""];  
+  if[not ""~env_file; :hsym `$env_file];
+  :.sravz_finsym.symbolsfile
   }
 
 / Read ticker symbols from CSV (header+rows), normalize to uppercase symbols.
@@ -46,7 +42,7 @@ defaultsymbols:{[]
   if[(0=count syms) or n<=0;
     .lg.e[`feedws;.sravz_util.msgtxt("Symbol file not found or empty ";string f)];
     '"Symbol file not found or empty: ",string f];
-  "," sv string n#syms
+  "," sv string each (n & count syms) # syms
   }
 
 / Initialize global SYMBOLS from env override or computed defaults.

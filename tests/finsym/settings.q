@@ -20,10 +20,15 @@ system "l ",finsym;
   -11h=type f
   }
 
-.ut.readcsvsymbols:{[]
-  syms:.sravz_finsym.readcsvsymbols .ut.fixture;
-  (0<count syms) and (`AAPL in syms)
-}
+.ut.defaultsymbols:{[]
+  s:.sravz_finsym.defaultsymbols[];
+  (10h=type s) and 3=count s
+  }
+
+/.ut.readcsvsymbols:{[]
+/  syms:.sravz_finsym.readcsvsymbols .ut.fixture;
+/  (0<count syms) and (`AAPL in syms)
+/}
 
 
 // .ut.getsymbollimit_with_env:{[]

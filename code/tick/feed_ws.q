@@ -2,7 +2,7 @@
 / Usage: loaded by TorQ via process.csv, or manually with -load flag
 / Incoming messages are handled by .z.ws and printed to console (stdout)
 
-util:getenv[`KDBAPPCODE],"/common/textutil.q";
+util:getenv[`KDBAPPCODE],"/common/util.q";
 system "l ",util;
 
 \d .feedws
