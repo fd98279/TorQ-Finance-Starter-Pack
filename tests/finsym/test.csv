@@ -1,0 +1,5 @@
+action,ms,bytes,lang,code,repeat,minver,comment
+true,0,0,q,.ut.readsymbols[],1,,,readcsvsymbols reads and normalizes ticker column
+true,0,0,q,.ut.getsymbollimit[],1,,,getsymbollimit returns default limit from settings in feed.q
+true,0,0,q,.ut.getsymbolsfile[],1,,,getsymbolsfile returns the configured symbols file
+true,0,0,q,.ut.readcsvsymbols[],1,,,readcsvsymbols reads and normalizes ticker column

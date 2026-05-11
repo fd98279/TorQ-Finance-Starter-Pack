@@ -1,0 +1,16 @@
+action,ms,bytes,lang,code,repeat,minver,comment
+before,0,0,q,.ut.reset[]; .ut.mockhandlers[]; .feedws.htrade::101i; .feedws.hquote::202i,1,,,Initialize spies and handles
+true,0,0,q,`AAPL~.feedws.pick[`s`p!(`AAPL;100f);`symbol`s;`],1,,,pick selects first matching key
+true,0,0,q,`missing~.feedws.pick[`x`y!(1;2);`a`b;`missing],1,,,pick returns default when no key present
+true,0,0,q,.ut.mkwswss[],1,,,mkwsconn builds default 443 endpoint for wss URL
+true,0,0,q,.ut.mkwsws[],1,,,mkwsconn preserves explicit host port
+true,0,0,q,.ut.mkwsreq[],1,,,mkwsconn builds request path
+true,0,0,q,.ut.readsymbols[],1,,,readcsvsymbols reads and normalizes ticker column
+true,0,0,q,.ut.tradefreqtest[],1,,,gettradefreq uses configured fallback variable
+true,0,0,q,.ut.quotefreqtest[],1,,,getquotefreq uses configured fallback variable
+run,0,0,q,.ut.reset[]; .feedws.onmsg[101i;.j.j `status_code`message!(200;"ok")],1,,,Status code 200 should trigger subscribe
+true,0,0,q,`trade~first .ut.subs,1,,,onmsg subscribes trade handle after auth
+run,0,0,q,.ut.reset[]; .feedws.onmsg[101i;.j.j `s`p`v!("AAPL";101.5;12)],1,,,Trade tick should route to raw and trade publisher
+true,0,0,q,(`trade~first .ut.rawKinds) and 1=.ut.tradeCount and 0=.ut.quoteCount,1,,,Trade message routing works
+run,0,0,q,.ut.reset[]; .feedws.onmsg[202i;.j.j `s`b`a!("MSFT";250.1;250.2)],1,,,Quote tick should route to raw and quote publisher
+true,0,0,q,(`quote~first .ut.rawKinds) and 1=.ut.quoteCount and 0=.ut.tradeCount,1,,,Quote message routing works
